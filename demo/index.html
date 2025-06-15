@@ -195,7 +195,6 @@
         const customPlaceholder = document.getElementById('customPlaceholder');
 
         function updatePlaceholder() {
-            // Плейсхолдер скрывается только если есть текст
             if (input.value.length > 0) {
                 customPlaceholder.classList.add('hidden');
             } else {
@@ -203,7 +202,6 @@
             }
         }
 
-        // Переменная для отслеживания вставки
         let isPasting = false;
 
         // Отслеживаем начало вставки
@@ -225,8 +223,6 @@
             } else {
                 counter.style.background = '#667eea';
             }
-
-            // Не обновляем плейсхолдер при вставке
             if (!isPasting) {
                 updatePlaceholder();
             }
@@ -254,10 +250,21 @@
                 return;
             }
 
-            const wordCount = text.split(' ').length;
-            const charCount = text.length;
+            const hasCyrillic = /[А-Яа-яЁё]/.test(text);
+            const hasLatin = /[A-Za-z]/.test(text);
             const hasNumbers = /\d/.test(text);
             const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(text);
+                        const allowedPattern = /^[A-Za-zА-Яа-яЁё0-9!@#$%^&*(),.?":{}|<>\s]+$/;
+
+            if (!allowedPattern.test(text) ||
+                !(hasCyrillic || hasLatin || hasNumbers || hasSpecialChars) ||
+                (hasLatin && hasSpecialChars)) {
+                showResult('Обнаружены недопустимые символы', '🚫');
+                return;
+            }
+
+            const wordCount = text.split(/\s+/).filter(Boolean).length;
+            const charCount = text.length;
 
             let analysis = `
                 <strong>Анализ вашего текста:</strong><br><br>
