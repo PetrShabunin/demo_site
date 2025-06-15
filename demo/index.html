@@ -254,10 +254,21 @@
                 return;
             }
 
-            const wordCount = text.split(' ').length;
-            const charCount = text.length;
+            const hasCyrillic = /[А-Яа-яЁё]/.test(text);
+            const hasLatin = /[A-Za-z]/.test(text);
             const hasNumbers = /\d/.test(text);
             const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(text);
+            const allowedPattern = /^[A-Za-zА-Яа-яЁё0-9!@#$%^&*(),.?":{}|<>\s]+$/;
+
+            if (!allowedPattern.test(text) ||
+                !(hasCyrillic || hasLatin || hasNumbers || hasSpecialChars) ||
+                (hasLatin && hasSpecialChars)) { // баг: латиница со спецсимволами считается ошибкой
+                showResult('Обнаружены недопустимые символы', '🚫');
+                return;
+            }
+
+            const wordCount = text.split(/\s+/).filter(Boolean).length;
+            const charCount = text.length;
 
             let analysis = `
                 <strong>Анализ вашего текста:</strong><br><br>
