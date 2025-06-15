@@ -1,0 +1,120 @@
+# --- Общие ---
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.swn
+*.sublime-workspace
+*.sublime-project
+
+# --- Git ---
+*.orig
+*.rej
+
+# --- IDE / редакторы ---
+.vscode/
+.idea/
+*.code-workspace
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# --- Visual Studio ---
+*.vcxproj.*
+*.ncb
+*.aps
+*.pch
+*.pdb
+*.obj
+*.dll
+*.exe
+*.cache
+*.ilk
+*.log
+*.tlog
+*.vspscc
+*.vssscc
+*.vscode/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+*.venv
+env/
+venv/
+ENV/
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# --- Node.js ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log
+package-lock.json
+yarn.lock
+.pnp.*
+.nyc_output/
+
+# --- macOS / Windows ---
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# --- Logs ---
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# --- Coverage ---
+coverage/
+*.lcov
+*.lcov.info
+.nyc_output/
+
+# --- Tests ---
+test-output/
+junit-*.xml
+
+# --- Environment ---
+.env
+.env.*
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
+
+# --- HTML/CSS/JS specific ---
+*.min.js
+*.min.css
+*.map
+
+# --- Temporary by editors ---
+*.~*
+*~
+
+# --- Other ---
+*.sqlite
+*.sqlite3
+*.db
+*.pid
+*.seed
+*.tgz
+
+# --- VS extensions and publishing ---
+.vs/
+.vsconfig
+.publishsettings

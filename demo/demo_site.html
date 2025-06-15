@@ -1,0 +1,292 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Демо с полем ввода</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+            position: relative;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+
+        .input-group {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: transparent;
+            position: relative;
+            z-index: 2;
+        }
+
+            input[type="text"]:focus {
+                border-color: #667eea;
+                box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+                transform: translateY(-2px);
+            }
+
+        /* Кастомный плейсхолдер */
+        .custom-placeholder {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 18px;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+
+            .custom-placeholder.hidden {
+                opacity: 0;
+                transform: translateY(-50%) translateX(-10px);
+            }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            min-width: 120px;
+        }
+
+            button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            }
+
+            button:active {
+                transform: translateY(0);
+            }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            text-align: left;
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .emoji {
+            font-size: 2em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .counter {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        input[type="text"]:focus + .counter {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <span class="emoji">✨</span>
+        <h1>Демо сайт</h1>
+
+        <div class="input-group">
+            <div class="input-wrapper">
+                <input type="text" id="userInput" maxlength="100">
+                <div class="custom-placeholder" id="customPlaceholder">Введите что-нибудь интересное...</div>
+            </div>
+            <div class="counter" id="counter">0/100</div>
+        </div>
+
+        <button onclick="processInput()">Обработать</button>
+        <button onclick="clearAll()">Очистить</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>const input = document.getElementById('userInput');
+        const counter = document.getElementById('counter');
+        const result = document.getElementById('result');
+        const customPlaceholder = document.getElementById('customPlaceholder');
+
+        function updatePlaceholder() {
+            // Плейсхолдер скрывается только если есть текст
+            if (input.value.length > 0) {
+                customPlaceholder.classList.add('hidden');
+            } else {
+                customPlaceholder.classList.remove('hidden');
+            }
+        }
+
+        // Переменная для отслеживания вставки
+        let isPasting = false;
+
+        // Отслеживаем начало вставки
+        input.addEventListener('paste', function(e) {
+            isPasting = true;
+            // Через небольшую задержку сбрасываем флаг
+            setTimeout(() => {
+                isPasting = false;
+            }, 100);
+        });
+
+        // Счетчик символов
+        input.addEventListener('input', function() {
+            const length = this.value.length;
+            counter.textContent = `${length}/100`;
+
+            if (length > 80) {
+                counter.style.background = '#ff6b6b';
+            } else {
+                counter.style.background = '#667eea';
+            }
+
+            // Не обновляем плейсхолдер при вставке
+            if (!isPasting) {
+                updatePlaceholder();
+            }
+        });
+
+        // Убираем обработчики focus и blur
+        // input.addEventListener('focus', updatePlaceholder);
+        // input.addEventListener('blur', updatePlaceholder);
+
+        // Не обрабатывается событие paste для плейсхолдера
+        // input.addEventListener('paste', updatePlaceholder);
+
+        // Обработка ввода при нажатии Enter
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                processInput();
+            }
+        });
+
+        function processInput() {
+            const text = input.value.trim();
+
+            if (!text) {
+                showResult('Пожалуйста, введите текст!', '⚠️');
+                return;
+            }
+
+            const wordCount = text.split(' ').length;
+            const charCount = text.length;
+            const hasNumbers = /\d/.test(text);
+            const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(text);
+
+            let analysis = `
+                <strong>Анализ вашего текста:</strong><br><br>
+                📝 Количество слов: ${wordCount}<br>
+                🔤 Количество символов: ${charCount}<br>
+                🔢 Содержит цифры: ${hasNumbers ? 'Да' : 'Нет'}<br>
+                ⭐ Содержит спецсимволы: ${hasSpecialChars ? 'Да' : 'Нет'}<br><br>
+                <strong>Ваш текст:</strong> "${text}"
+            `;
+
+            showResult(analysis, '📊');
+        }
+
+        function showResult(content, emoji) {
+            result.innerHTML = `<span style="font-size: 1.5em; margin-right: 10px;">${emoji}</span>${content}`;
+            result.style.display = 'block';
+            result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function clearAll() {
+            input.value = '';
+            counter.textContent = '0/100';
+            counter.style.background = '#667eea';
+            result.style.display = 'none';
+            updatePlaceholder();
+        }
+
+        window.addEventListener('load', () => {
+            input.focus();
+        });</script>
+</body>
+</html>
