@@ -154,8 +154,8 @@
 
         .counter {
             position: absolute;
-            top: -10px;
-            right: 10px;
+            top: -15px;
+            right: 15px;
             background: #667eea;
             color: white;
             border-radius: 20px;
@@ -163,9 +163,11 @@
             font-size: 12px;
             opacity: 0;
             transition: opacity 0.3s ease;
+            white-space: nowrap;
+            z-index: 10;
         }
 
-        input[type="text"]:focus + .counter {
+        .input-group:focus-within .counter {
             opacity: 1;
         }
     </style>
@@ -189,12 +191,14 @@
         <div class="result" id="result"></div>
     </div>
 
-    <script>const input = document.getElementById('userInput');
+    <script>
+        const input = document.getElementById('userInput');
         const counter = document.getElementById('counter');
         const result = document.getElementById('result');
         const customPlaceholder = document.getElementById('customPlaceholder');
 
         function updatePlaceholder() {
+            // Плейсхолдер скрывается только если есть текст
             if (input.value.length > 0) {
                 customPlaceholder.classList.add('hidden');
             } else {
@@ -202,10 +206,11 @@
             }
         }
 
+        // Переменная для отслеживания вставки
         let isPasting = false;
 
         // Отслеживаем начало вставки
-        input.addEventListener('paste', function(e) {
+        input.addEventListener('paste', function (e) {
             isPasting = true;
             // Через небольшую задержку сбрасываем флаг
             setTimeout(() => {
@@ -214,7 +219,7 @@
         });
 
         // Счетчик символов
-        input.addEventListener('input', function() {
+        input.addEventListener('input', function () {
             const length = this.value.length;
             counter.textContent = `${length}/100`;
 
@@ -223,6 +228,8 @@
             } else {
                 counter.style.background = '#667eea';
             }
+
+            // Не обновляем плейсхолдер при вставке
             if (!isPasting) {
                 updatePlaceholder();
             }
@@ -236,7 +243,7 @@
         // input.addEventListener('paste', updatePlaceholder);
 
         // Обработка ввода при нажатии Enter
-        input.addEventListener('keypress', function(e) {
+        input.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 processInput();
             }
@@ -254,7 +261,7 @@
             const hasLatin = /[A-Za-z]/.test(text);
             const hasNumbers = /\d/.test(text);
             const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(text);
-                        const allowedPattern = /^[A-Za-zА-Яа-яЁё0-9!@#$%^&*(),.?":{}|<>\s]+$/;
+            const allowedPattern = /^[A-Za-zА-Яа-яЁё0-9!@#$%^&*(),.?":{}|<>\s]+$/;
 
             if (!allowedPattern.test(text) ||
                 !(hasCyrillic || hasLatin || hasNumbers || hasSpecialChars) ||
@@ -267,13 +274,13 @@
             const charCount = text.length;
 
             let analysis = `
-                <strong>Анализ вашего текста:</strong><br><br>
-                📝 Количество слов: ${wordCount}<br>
-                🔤 Количество символов: ${charCount}<br>
-                🔢 Содержит цифры: ${hasNumbers ? 'Да' : 'Нет'}<br>
-                ⭐ Содержит спецсимволы: ${hasSpecialChars ? 'Да' : 'Нет'}<br><br>
-                <strong>Ваш текст:</strong> "${text}"
-            `;
+                    <strong>Анализ вашего текста:</strong><br><br>
+                    📝 Количество слов: ${wordCount}<br>
+                    🔤 Количество символов: ${charCount}<br>
+                    🔢 Содержит цифры: ${hasNumbers ? 'Да' : 'Нет'}<br>
+                    ⭐ Содержит спецсимволы: ${hasSpecialChars ? 'Да' : 'Нет'}<br><br>
+                    <strong>Ваш текст:</strong> "${text}"
+                `;
 
             showResult(analysis, '📊');
         }
@@ -294,6 +301,7 @@
 
         window.addEventListener('load', () => {
             input.focus();
-        });</script>
+        });
+    </script>
 </body>
 </html>
